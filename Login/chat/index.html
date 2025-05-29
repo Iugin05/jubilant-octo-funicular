@@ -1,0 +1,33 @@
+<?php
+require_once 'db_connection.php';
+session_start();
+
+// Create a user session if doesn't exist
+if (!isset($_SESSION['user_id'])) {
+    // For simplicity, we'll create a temporary user
+    $stmt = $pdo->prepare("INSERT INTO users (username) VALUES (?)");
+    $stmt->execute([uniqid('guest_')]);
+    $_SESSION['user_id'] = $pdo->lastInsertId();
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with Us</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Customer Support</div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    <script>
+        const userId = <?php echo $_SESSION['user_id']; ?>;
+    </script>
+    <script src="scripts.js"></script>
+</body>
+</html>
